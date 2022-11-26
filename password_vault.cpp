@@ -55,7 +55,7 @@ int main(){
     MYSQL_RES *res;
     int qstate1, qstate2, qstate4;
     conn = mysql_init(0);
-    conn = mysql_real_connect(conn, "localhost", "root", "password", "encrypt", 3306, NULL, 0);
+    conn = mysql_real_connect(conn, "localhost", "in.env", "in.env", "encrypt", 3306, NULL, 0);
     if(conn){
         cout<<"DONE !!"<<endl;
         // string query1 = "SELECT * FROM passwords";
