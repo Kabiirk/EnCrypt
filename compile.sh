@@ -1,0 +1,4 @@
+# g++ password_vault.cpp -o password_vault.exe
+# g++ password_vault.cpp -Wall -Werror -I "C:/Program Files/MySQL/MySQL Server 8.0/include" -L "C:/Program Files/MySQL/MySQL Server 8.0/lib" -lmysql -o password_vault.exe
+# C:/Users/kabii/Desktop/mingw64/bin/g++ password_vault.cpp -Wall -Werror -I "C:/Program Files/MySQL/MySQL Server 8.0/include" -L "C:/Program Files/MySQL/MySQL Server 8.0/lib" -lmysql -o password_vault.exe
+C:/mingw64/bin/g++ password_vault.cpp -Wall -Werror -I "C:/Program Files/MySQL/MySQL Server 8.0/include" -I "C:/Program Files/MySQL/Connector C++ 8.0/include" -L "C:/Program Files/MySQL/MySQL Server 8.0/lib" -lmysql -o password_vault.exe
