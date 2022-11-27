@@ -72,6 +72,8 @@ int main(){
 	refresh();			/* Print it on to the real screen */
 	getch();			/* Wait for user input */
 	endwin();			/* End curses mode		  */
+
+    // Initialize values
     const string url=EXAMPLE_HOST;
     const string user=EXAMPLE_USER;
     const string pass=EXAMPLE_PASS;
@@ -82,12 +84,7 @@ int main(){
     unique_ptr<sql::Connection> con(driver->connect(url, user, pass));
     con->setSchema(database);
     stmt = con->createStatement();
-    res = stmt->executeQuery("SELECT * FROM passwords");
-    while (res->next()) {
-        cout <<res->getString(1)<<" | "<<res->getString(2)<<" | "<<res->getString(3)<<endl;
-    }
-    delete res;
-    delete stmt;
+
     // MYSQL * conn;
     // MYSQL_ROW row;
     // MYSQL_RES *res;
@@ -147,6 +144,8 @@ int main(){
             //     cout<<"Insert failed"<<endl;
             // }
             // cout<<""<<endl;
+            stmt->execute("INSERT INTO passwords (SITENAME, USERNAME, PASSWORD_B64) VALUES ('test3.com', 'test3', 'something64==');");
+            cout<<endl;
         }
         if(choice==2){
             // string query2 = "SELECT * FROM passwords";
@@ -162,6 +161,11 @@ int main(){
             //     cout<<"Query Failed"<<endl;
             // }
             // cout<<""<<endl;
+            res = stmt->executeQuery("SELECT * FROM passwords");
+            while (res->next()) {
+                cout <<res->getString(1)<<" | "<<res->getString(2)<<" | "<<res->getString(3)<<endl;
+            }
+            cout<<endl;
         }
         if(choice==3){
             cout<<"Exiting"<<endl;
@@ -178,8 +182,11 @@ int main(){
             //     cout<<"Query Failed"<<endl;
             // }
             // cout<<""<<endl;
+            stmt->execute("DELETE FROM passwords where USERNAME='test3';");
         }
     }
+    delete res;
+    delete stmt;
     cout<<"BYE !"<<endl;
 
     return 0;
