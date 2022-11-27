@@ -66,12 +66,24 @@ void printVect(vector<string> v){
 }
 
 int main(){
-    initscr();			/* Start curses mode 		  */
-	printw("Hello World! Press any key to exit ...");	/* Print Hello World		  */
-	refresh();			/* Print it on to the real screen */
-	getch();			/* Wait for user input */
-	endwin();			/* End curses mode		  */
+    initscr();
+    cbreak();
 
+    // height width, start_y, start_x
+    WINDOW * win = newwin(10, 30, 10, 10);
+    refresh();
+
+    box(win, 0, 0);
+    mvwprintw(win, 1, 1, "This is a box !");
+    wrefresh(win);
+
+
+	getch();
+
+
+	endwin();
+
+    /*
     // Initialize values
     const string url=EXAMPLE_HOST;
     const string user=EXAMPLE_USER;
@@ -214,6 +226,6 @@ int main(){
     delete res;
     delete stmt;
     cout<<"BYE !"<<endl;
-
+    */
     return 0;
 }
