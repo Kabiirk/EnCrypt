@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include "base64.h"
-#include <fstream>
 #include <curses.h>
 
 // Connecting to MySQL
@@ -84,6 +83,33 @@ int main(){
     unique_ptr<sql::Connection> con(driver->connect(url, user, pass));
     con->setSchema(database);
     stmt = con->createStatement();
+    // MYSQL * conn;
+    // MYSQL_ROW row;
+    // MYSQL_RES *res;
+    // int qstate1, qstate2, qstate4;
+    // conn = mysql_init(0);
+    // conn = mysql_real_connect(conn, "localhost", "in.env", "in.env", "encrypt", 3306, NULL, 0);
+    // if(conn){
+    //     cout<<"DONE !!"<<endl;
+    //     // string query1 = "SELECT * FROM passwords";
+    //     // string query2 = "INSERT INTO passwords (SITENAME, USERNAME, PASSWORD_B64) VALUES ('test3.com', 'test3', 'something64==');";
+    //     // const char* q1 = query1.c_str();
+    //     // const char* q2 = query2.c_str();
+    //     // qstate1 = mysql_query(conn, q1);
+    //     // qstate2 = mysql_query(conn, q2);
+    //     // if(!qstate1){
+    //     //     res=mysql_store_result(conn);
+    //     //     while( (row = mysql_fetch_row(res)) ){
+    //     //         printf("SITE: %s | USER: %s | VALUE: %s\n", row[0], row[1], row[2]);
+    //     //     }
+    //     // }
+    //     // else{
+    //     //     cout<<"Query Failed"<<endl;
+    //     // }
+    // }
+    // else{
+    //     cout<<"NOT DONE !!"<<endl;
+    // }
 
     // MYSQL * conn;
     // MYSQL_ROW row;
