@@ -68,13 +68,23 @@ void printVect(vector<string> v){
 int main(){
     initscr();
     cbreak();
+    noecho();
 
     // height width, start_y, start_x
-    WINDOW * win = newwin(10, 30, 10, 10);
+    WINDOW * win = newwin(10, 30, 5, 5);
     refresh();
 
-    box(win, 0, 0);
-    mvwprintw(win, 1, 1, "This is a box !");
+    if(!has_colors()){
+        printw("terminal does not support color");
+        getch();
+        return -1;
+    }
+    start_color();
+    init_pair(1, COLOR_CYAN, COLOR_WHITE);
+
+    attron(COLOR_PAIR(1));
+    printw("This is some text !");
+    attroff(COLOR_PAIR(1));
     wrefresh(win);
 
 
