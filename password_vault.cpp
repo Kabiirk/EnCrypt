@@ -67,30 +67,28 @@ void printVect(vector<string> v){
 
 int main(){
     initscr();
-    cbreak();
     noecho();
+    cbreak();
 
-    // height width, start_y, start_x
-    WINDOW * win = newwin(10, 30, 5, 5);
+    // Get screen size
+    int yMax, xMax;
+    getmaxyx(stdscr, yMax, xMax);
+
+    // init window
+    WINDOW * inputwin = newwin(3, xMax-12, yMax-5, 5);
+    box(inputwin, 0, 0);
     refresh();
+    wrefresh(inputwin);
 
-    if(!has_colors()){
-        printw("terminal does not support color");
-        getch();
-        return -1;
+    keypad(inputwin, true);
+
+    int c = wgetch(inputwin);
+    if(c==KEY_UP){
+        mvwprintw(inputwin,1,1, "You pressed UP Key");
+        wrefresh(inputwin);
     }
-    start_color();
-    init_pair(1, COLOR_CYAN, COLOR_WHITE);
-
-    attron(COLOR_PAIR(1));
-    printw("This is some text !");
-    attroff(COLOR_PAIR(1));
-    wrefresh(win);
-
 
 	getch();
-
-
 	endwin();
 
     /*
