@@ -52,7 +52,19 @@ class Menubar{
             std::string et = this->menus[selected_menu].text+" was pressed !";
             wmove(this->win,2,2);
             wclrtoeol(this->win);
-            mvwprintw(win, 2,2, et.c_str());
+            if(this->menus[selected_menu].text == "File"){
+                std::string et[4] = {
+                    "A",
+                    "B",
+                    "C"
+                };
+                int i = 2;
+                for(auto e : et){
+                    mvwprintw(win, i,2, e.c_str());
+                    i++;
+                }
+                i = 2;
+            }
             box(this->win, 0, 0);
         }
         for(int i = 0; i<num_menus; i++){
