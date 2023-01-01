@@ -77,6 +77,7 @@ int main(){
 
     WINDOW *win = newwin(yMax/2, xMax/2, yMax/4, xMax/4);
     box(win, 0, 0);
+    scrollok(win, TRUE);
 
     // Initialize Menubars
     Menu menus[4] = {

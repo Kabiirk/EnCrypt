@@ -49,29 +49,48 @@ class Menubar{
 
     void handleTriggers(char trigger){
         if(trigger=='\n'){
-            std::string et = this->menus[selected_menu].text+" was pressed !";
+            this->clearScreen();
+            std::string ets = this->menus[selected_menu].text+" was pressed !";
+            // std::cout<<ets<<std::endl;
             wmove(this->win,2,2);
-            wclrtoeol(this->win);
+            // wclrtoeol(this->win);
             if(this->menus[selected_menu].text == "File"){
-                std::string et[4] = {
+                std::string et[15] = {
                     "A",
                     "B",
-                    "C"
+                    "C",
+                    "D",
+                    "E",
+                    "F",
                 };
                 int i = 2;
                 for(auto e : et){
-                    mvwprintw(win, i,2, e.c_str());
+                    mvwprintw(this->win, i,2, e.c_str());
                     i++;
+                    // wprintw(this->win, e.c_str(), i);
+                    // i++;
+                    wrefresh(this->win);
                 }
                 i = 2;
+                wmove(this->win,2,2);
             }
-            box(this->win, 0, 0);
+            else{
+                wmove(this->win,2,2);
+                // wclrtoeol(this->win);
+                mvwprintw(this->win, 2,2, ets.c_str());
+            }
+            // box(this->win, 0, 0);
         }
         for(int i = 0; i<num_menus; i++){
             if(trigger == this->menus[i].trigger){
                 selected_menu = i;
             }
         }
+    }
+
+    void clearScreen(){
+        wclear(this->win);
+        box(this->win, 0, 0);
     }
 
 };
