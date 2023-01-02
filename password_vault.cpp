@@ -58,22 +58,6 @@ class PASSWORD{
     }
 };
 
-class SQLCONN{
-    public:
-        SQLCONN( string HOST, string USER, string PASS, string DB ){
-            const string url=HOST;
-            const string user=USER;
-            const string pass=PASS;
-            const string database=DB;
-            sql::Driver* driver = get_driver_instance();
-            sql::Statement* stmt;
-            sql::ResultSet* res;
-            unique_ptr<sql::Connection> con(driver->connect(url, user, pass));
-            con->setSchema(database);
-            stmt = con->createStatement();
-        }
-};
-
 void printVect(vector<string> v){
     cout<<"< ";
     for(auto s : v){
@@ -89,8 +73,18 @@ int main(){
     cbreak();
     curs_set(0);
 
-    // Init MySQL Connector
-    
+    // Initialize MySQL Connection
+    const string url=EXAMPLE_HOST;
+    const string user=EXAMPLE_USER;
+    const string pass=EXAMPLE_PASS;
+    const string database=EXAMPLE_DB;
+    sql::Driver* driver = get_driver_instance();
+    sql::Statement* stmt;
+    sql::ResultSet* res;
+    unique_ptr<sql::Connection> con(driver->connect(url, user, pass));
+    con->setSchema(database);
+    stmt = con->createStatement();
+
 
     int yMax, xMax;
     getmaxyx(stdscr, yMax, xMax);
@@ -119,13 +113,62 @@ int main(){
         if(ch=='x'){
             break;
         }
-        menubar.handleTriggers(ch);
+        // menubar.handleTriggers(ch);
+
+        /* Testing new approach */
+        if(ch=='\n'){
+            menubar.clearScreen();
+            std::string ets = menubar.menus[menubar.selected_menu].text+" was pressed !";
+            // std::cout<<ets<<std::endl;
+            wmove(menubar.win,2,2);
+            // wclrtoeol(menubar.win);
+            if(menubar.menus[menubar.selected_menu].text == "File"){
+                std::string et[15] = {
+                    "A",
+                    "B",
+                    "C",
+                    "D",
+                    "E",
+                    "F",
+                };
+                int i = 2;
+                for(auto e : et){
+                    mvwprintw(menubar.win, i,2, e.c_str());
+                    i++;
+                    // wprintw(menubar.win, e.c_str(), i);
+                    // i++;
+                    wrefresh(menubar.win);
+                }
+                i = 2;
+                wmove(menubar.win,2,2);
+                stmt->execute("INSERT INTO passwords (SITENAME, USERNAME, PASSWORD_B64) VALUES ('test3.com', 'test3', 'something64==');");
+            }
+            else if(menubar.menus[menubar.selected_menu].text == "Edit"){
+                stmt->execute("DELETE FROM passwords where USERNAME='test3';");
+                wmove(menubar.win,2,2);
+                string done = "test Data Deleted !";
+                mvwprintw(menubar.win, 2,2, done.c_str());
+            }
+            else{
+                wmove(menubar.win,2,2);
+                // wclrtoeol(menubar.win);
+                mvwprintw(menubar.win, 2,2, ets.c_str());
+            }
+            // box(menubar.win, 0, 0);
+        }
+        for(int i = 0; i<menubar.num_menus; i++){
+            if(ch == menubar.menus[i].trigger){
+                menubar.selected_menu = i;
+            }
+        }
+
+
         menubar.draw();
     }
 
 	endwin();
 
-    
+    /*
     // Initialize values
     const string url=EXAMPLE_HOST;
     const string user=EXAMPLE_USER;
@@ -268,6 +311,7 @@ int main(){
     delete res;
     delete stmt;
     cout<<"BYE !"<<endl;
+    */
 
     return 0;
 }
