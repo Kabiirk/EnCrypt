@@ -58,6 +58,22 @@ class PASSWORD{
     }
 };
 
+class SQLCONN{
+    public:
+        SQLCONN( string HOST, string USER, string PASS, string DB ){
+            const string url=HOST;
+            const string user=USER;
+            const string pass=PASS;
+            const string database=DB;
+            sql::Driver* driver = get_driver_instance();
+            sql::Statement* stmt;
+            sql::ResultSet* res;
+            unique_ptr<sql::Connection> con(driver->connect(url, user, pass));
+            con->setSchema(database);
+            stmt = con->createStatement();
+        }
+};
+
 void printVect(vector<string> v){
     cout<<"< ";
     for(auto s : v){
@@ -67,10 +83,14 @@ void printVect(vector<string> v){
 }
 
 int main(){
+    // Initialize TUI
     initscr();
     noecho();
     cbreak();
     curs_set(0);
+
+    // Init MySQL Connector
+    
 
     int yMax, xMax;
     getmaxyx(stdscr, yMax, xMax);
@@ -105,7 +125,7 @@ int main(){
 
 	endwin();
 
-    /*
+    
     // Initialize values
     const string url=EXAMPLE_HOST;
     const string user=EXAMPLE_USER;
@@ -248,6 +268,6 @@ int main(){
     delete res;
     delete stmt;
     cout<<"BYE !"<<endl;
-    */
+
     return 0;
 }
