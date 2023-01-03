@@ -89,8 +89,16 @@ int main(){
     int yMax, xMax;
     getmaxyx(stdscr, yMax, xMax);
 
-    WINDOW *win = newwin(yMax/2, xMax/2, yMax/4, xMax/4);
+    WINDOW *win = newwin(yMax/2, xMax/2+5, yMax/4, xMax/4);
+    WINDOW *pwd_form = newwin(yMax/2, xMax/2, yMax/4, xMax/2-4);
+
     box(win, 0, 0);
+    box(pwd_form, 0, 0);
+
+    wrefresh(win);
+    wrefresh(pwd_form);
+
+
     scrollok(win, TRUE);
 
     // Initialize Menubars
