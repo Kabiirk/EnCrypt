@@ -66,6 +66,20 @@ void printVect(vector<string> v){
     cout<<" >"<<endl;
 }
 
+std::string take_input(WINDOW *win, int y, int x){
+    wmove(win,y,x);
+    std::string s;
+    char a = wgetch(win);
+    while(1){
+        if(a=='\n'){
+            break;
+        }
+        s.push_back(a);
+        a = wgetch(win);
+    }
+    return s;
+}
+
 int main(){
     // Initialize TUI
     initscr();
@@ -80,7 +94,7 @@ int main(){
     const string database=EXAMPLE_DB;
     sql::Driver* driver = get_driver_instance();
     sql::Statement* stmt;
-    sql::ResultSet* res;
+    // sql::ResultSet* res;
     unique_ptr<sql::Connection> con(driver->connect(url, user, pass));
     con->setSchema(database);
     stmt = con->createStatement();
@@ -89,14 +103,14 @@ int main(){
     int yMax, xMax;
     getmaxyx(stdscr, yMax, xMax);
 
-    WINDOW *win = newwin(yMax/2, xMax/2, yMax/4, xMax/4+5);
-    WINDOW *pwd_form = newwin(5, 5, yMax/4, xMax/4);
+    WINDOW *win = newwin(yMax/2, xMax/2, yMax/4, xMax/4);
+    // WINDOW *pwd_form = newwin(yMax/2, 10, yMax/4, xMax/4);
 
     box(win, 0, 0);
-    box(pwd_form, 0, 0);
+    // box(pwd_form, 0, 0);
 
     wrefresh(win);
-    wrefresh(pwd_form);
+    // wrefresh(pwd_form);
 
 
     scrollok(win, TRUE);
@@ -131,36 +145,54 @@ int main(){
             wmove(menubar.win,2,2);
             // wclrtoeol(menubar.win);
             if(menubar.menus[menubar.selected_menu].text == "File"){
-                std::string et[15] = {
-                    "A",
-                    "B",
-                    "C",
-                    "D",
-                    "E",
-                    "F",
-                };
-                int i = 2;
-                for(auto e : et){
-                    mvwprintw(menubar.win, i,2, e.c_str());
-                    i++;
-                    // wprintw(menubar.win, e.c_str(), i);
-                    // i++;
-                    wrefresh(menubar.win);
-                }
-                i = 2;
-                wmove(menubar.win,2,2);
-                stmt->execute("INSERT INTO passwords (SITENAME, USERNAME, PASSWORD_B64) VALUES ('test3.com', 'test3', 'something64==');");
+                // std::string et[15] = {
+                //     "A",
+                //     "B",
+                //     "C",
+                //     "D",
+                //     "E",
+                //     "F",
+                // };
+
+                // int i = 2;
+                // for(auto e : et){
+                //     mvwprintw(menubar.win, i,2, e.c_str());
+                //     i++;
+                //     // wprintw(menubar.win, e.c_str(), i);
+                //     // i++;
+                //     wrefresh(menubar.win);
+                // }
+                // i = 2;
+                std::string request = "Please enter Site URL:";
+                menubar.draw();
+                mvwprintw(win, 2,2, request.c_str());
+                echo();
+                std::string s1 = take_input(win, 3, 2);
+                
+                request = "Please Enter Username:";
+                menubar.draw();
+                mvwprintw(win, 4,2, request.c_str());
+                std::string s2 = take_input(win, 5, 2); 
+
+                request = "Please enter your password:";
+                menubar.draw();
+                mvwprintw(win, 6,2, request.c_str());
+                std::string s3 = take_input(win, 7, 2);
+                noecho();
+
+                wmove(win,2,2);
+                stmt->execute("INSERT INTO passwords (SITENAME, USERNAME, PASSWORD_B64) VALUES ('"+s1+"', '"+s2+"', '"+s3+"');");
             }
             else if(menubar.menus[menubar.selected_menu].text == "Edit"){
-                stmt->execute("DELETE FROM passwords where USERNAME='test3';");
-                wmove(menubar.win,2,2);
+                stmt->execute("DELETE FROM passwords where USERNAME='K2';");
+                wmove(win,2,2);
                 string done = "test Data Deleted !";
-                mvwprintw(menubar.win, 2,2, done.c_str());
+                mvwprintw(win, 2,2, done.c_str());
             }
             else{
-                wmove(menubar.win,2,2);
+                wmove(win,2,2);
                 // wclrtoeol(menubar.win);
-                mvwprintw(menubar.win, 2,2, ets.c_str());
+                mvwprintw(win, 2,2, ets.c_str());
             }
             // box(menubar.win, 0, 0);
         }
