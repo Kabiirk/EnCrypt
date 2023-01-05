@@ -58,14 +58,6 @@ class PASSWORD{
     }
 };
 
-void printVect(vector<string> v){
-    cout<<"< ";
-    for(auto s : v){
-        cout<<s<<" ";
-    }
-    cout<<" >"<<endl;
-}
-
 std::string take_input(WINDOW *win, int y, int x){
     wmove(win,y,x);
     std::string s;
@@ -94,7 +86,7 @@ int main(){
     const string database=EXAMPLE_DB;
     sql::Driver* driver = get_driver_instance();
     sql::Statement* stmt;
-    // sql::ResultSet* res;
+    sql::ResultSet* res;
     unique_ptr<sql::Connection> con(driver->connect(url, user, pass));
     con->setSchema(database);
     stmt = con->createStatement();
@@ -117,9 +109,9 @@ int main(){
 
     // Initialize Menubars
     Menu menus[4] = {
-        Menu("File", 'f'),
-        Menu("Edit", 'e'),
-        Menu("Selection", 's'),
+        Menu("Add", 'a'),
+        Menu("Delete", 'd'),
+        Menu("View", 'v'),
         Menu("[X]", 'x'),
     };
 
@@ -144,25 +136,7 @@ int main(){
             // std::cout<<ets<<std::endl;
             wmove(menubar.win,2,2);
             // wclrtoeol(menubar.win);
-            if(menubar.menus[menubar.selected_menu].text == "File"){
-                // std::string et[15] = {
-                //     "A",
-                //     "B",
-                //     "C",
-                //     "D",
-                //     "E",
-                //     "F",
-                // };
-
-                // int i = 2;
-                // for(auto e : et){
-                //     mvwprintw(menubar.win, i,2, e.c_str());
-                //     i++;
-                //     // wprintw(menubar.win, e.c_str(), i);
-                //     // i++;
-                //     wrefresh(menubar.win);
-                // }
-                // i = 2;
+            if(menubar.menus[menubar.selected_menu].text == "Add"){
                 std::string request = "Please enter Site URL:";
                 menubar.draw();
                 mvwprintw(win, 2,2, request.c_str());
@@ -180,14 +154,45 @@ int main(){
                 std::string s3 = take_input(win, 7, 2);
                 noecho();
 
-                wmove(win,2,2);
                 stmt->execute("INSERT INTO passwords (SITENAME, USERNAME, PASSWORD_B64) VALUES ('"+s1+"', '"+s2+"', '"+s3+"');");
+                
+                request = "DONE ! Press Enter to return to screen";
+                mvwprintw(win, 9,2, request.c_str());
+                std::string s4 = take_input(win, 7, 2);
+                menubar.clearScreen();
             }
-            else if(menubar.menus[menubar.selected_menu].text == "Edit"){
-                stmt->execute("DELETE FROM passwords where USERNAME='K2';");
-                wmove(win,2,2);
-                string done = "test Data Deleted !";
-                mvwprintw(win, 2,2, done.c_str());
+            else if(menubar.menus[menubar.selected_menu].text == "Delete"){
+                std::string request = "Please enter username to delete:";
+                menubar.draw();
+                mvwprintw(win, 2,2, request.c_str());
+                echo();
+                std::string s1 = take_input(win, 3, 2);
+                noecho();
+
+                stmt->execute("DELETE FROM passwords where USERNAME='"+s1+"';");
+    
+                string done = "Password Deleted ! Press Enter to return to screen";
+                mvwprintw(win, 5,2, done.c_str());
+                std::string s4 = take_input(win, 7, 2);
+                menubar.clearScreen();
+            }
+            else if(menubar.menus[menubar.selected_menu].text == "View"){
+                menubar.draw();
+
+                res = stmt->executeQuery("SELECT * FROM passwords");
+                std::string s = "URL, Username, Password";
+                wattron(win, A_BOLD);
+                mvwprintw(win, 2,2, s.c_str());
+                s = "-----------------------";
+                mvwprintw(win, 3,2, s.c_str());
+                wattroff(win, A_BOLD);
+                int i = 4;
+                while (res->next()) {
+                    std::string result = res->getString(1)+", "+res->getString(2)+", "+res->getString(3);
+                    mvwprintw(win, i,2, result.c_str());
+                    i++;
+                }
+                cout<<endl;
             }
             else{
                 wmove(win,2,2);
