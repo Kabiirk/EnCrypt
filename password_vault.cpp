@@ -95,27 +95,29 @@ int main(){
     int yMax, xMax;
     getmaxyx(stdscr, yMax, xMax);
 
-    WINDOW *win = newwin(yMax/2, xMax/2, yMax/4, xMax/4);
+    WINDOW *win = newwin(3*yMax/4, (3*xMax/4)-10, yMax/8, (xMax/8)+10);
+    WINDOW *win2 = newwin(3*yMax/4, 10, yMax/8, xMax/8);
     // WINDOW *pwd_form = newwin(yMax/2, 10, yMax/4, xMax/4);
 
     box(win, 0, 0);
-    // box(pwd_form, 0, 0);
+    box(win2, 0, 0);
 
     wrefresh(win);
-    // wrefresh(pwd_form);
+    wrefresh(win2);
 
 
     scrollok(win, TRUE);
 
     // Initialize Menubars
-    Menu menus[4] = {
+    Menu menus[5] = {
         Menu("Add", 'a'),
         Menu("Delete", 'd'),
         Menu("View", 'v'),
+        Menu("Settings", 's'),
         Menu("[X]", 'x'),
     };
 
-    Menubar menubar = Menubar(win, menus, 4);
+    Menubar menubar = Menubar(win, menus, 5);
     menubar.draw();
 
 
@@ -129,13 +131,10 @@ int main(){
         }
         // menubar.handleTriggers(ch);
 
-        /* Testing new approach */
         if(ch=='\n'){
             menubar.clearScreen();
             std::string ets = menubar.menus[menubar.selected_menu].text+" was pressed !";
-            // std::cout<<ets<<std::endl;
             wmove(menubar.win,2,2);
-            // wclrtoeol(menubar.win);
             if(menubar.menus[menubar.selected_menu].text == "Add"){
                 std::string request = "Please enter Site URL:";
                 menubar.draw();
@@ -156,7 +155,7 @@ int main(){
 
                 stmt->execute("INSERT INTO passwords (SITENAME, USERNAME, PASSWORD_B64) VALUES ('"+s1+"', '"+s2+"', '"+s3+"');");
                 
-                request = "DONE ! Press Enter to return to screen";
+                request = "DONE ! Press Enter to return to Home screen";
                 mvwprintw(win, 9,2, request.c_str());
                 std::string s4 = take_input(win, 7, 2);
                 menubar.clearScreen();
@@ -171,7 +170,7 @@ int main(){
 
                 stmt->execute("DELETE FROM passwords where USERNAME='"+s1+"';");
     
-                string done = "Password Deleted ! Press Enter to return to screen";
+                string done = "Password Deleted ! Press Enter to return to Home screen";
                 mvwprintw(win, 5,2, done.c_str());
                 std::string s4 = take_input(win, 7, 2);
                 menubar.clearScreen();

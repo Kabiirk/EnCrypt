@@ -67,8 +67,6 @@ class Menubar{
                 for(auto e : et){
                     mvwprintw(this->win, i,2, e.c_str());
                     i++;
-                    // wprintw(this->win, e.c_str(), i);
-                    // i++;
                     wrefresh(this->win);
                 }
                 i = 2;
