@@ -17,11 +17,12 @@ class Menu{
 
 class Menubar{
     public:
-        Menubar(WINDOW *win, Menu* menus, int num_menus){
+        Menubar(WINDOW *win, Menu* menus, int num_menus, bool horizontal=true){
             this->win = win;
             this->menus = menus;
             this->num_menus = num_menus;
             this->selected_menu = -1;
+            this->horizontal = horizontal;
 
             int current_pos = 2;
 
@@ -34,16 +35,29 @@ class Menubar{
         Menu *menus;
         int num_menus;
         int selected_menu;
+        bool horizontal;
 
     void draw(){
-        for(int i = 0; i<num_menus; i++){
-            int start_x = this->menus[i].start_x;
-            std::string text = this->menus[i].text;
-            if(selected_menu==i){
-                wattron(win, A_STANDOUT);
+        if(this->horizontal){
+            for(int i = 0; i<num_menus; i++){
+                int start_x = this->menus[i].start_x;
+                std::string text = this->menus[i].text;
+                if(selected_menu==i){
+                    wattron(win, A_STANDOUT);
+                }
+                mvwprintw(win, 0, start_x, text.c_str());
+                wattroff(win, A_STANDOUT);
             }
-            mvwprintw(win, 0, start_x, text.c_str());
-            wattroff(win, A_STANDOUT);
+        }
+        else{
+            for(int i = 0; i<num_menus; i++){
+                std::string text = this->menus[i].text;
+                if(selected_menu==i){
+                    wattron(win, A_STANDOUT);
+                }
+                mvwprintw(win, i, 0, text.c_str());
+                wattroff(win, A_STANDOUT);
+            }
         }
     }
 

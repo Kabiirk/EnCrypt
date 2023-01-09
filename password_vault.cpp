@@ -97,16 +97,20 @@ int main(){
     getmaxyx(stdscr, yMax, xMax);
 
     WINDOW *win = newwin(3*yMax/4, (3*xMax/4)-10, yMax/8, (xMax/8)+10);
-    WINDOW *win2 = newwin(3*yMax/4, 10, yMax/8, xMax/8);
+    WINDOW *win2 = newwin((3*yMax/8)+1, 10, yMax/8, xMax/8);
+    WINDOW *win3 = newwin(3*yMax/8, 10, yMax/2, xMax/8);
+
     // scrollable pad
-    WINDOW *pad = newpad((3*yMax/4) + 1, xMax);
+    // WINDOW *pad = newpad((3*yMax/4) + 1, xMax);
 
 
     box(win, 0, 0);
     box(win2, 0, 0);
+    box(win3, 0, 0);
 
     wrefresh(win);
     wrefresh(win2);
+    wrefresh(win3);
 
 
     scrollok(win, TRUE);
@@ -121,7 +125,9 @@ int main(){
     };
 
     Menubar menubar = Menubar(win, menus, 5);
+    Menubar menubar2 = Menubar(win3, menus, 5, false);
     menubar.draw();
+    menubar2.draw();
 
 
     char ch='a';
