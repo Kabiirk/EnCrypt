@@ -77,6 +77,7 @@ int main(){
     initscr();
     noecho();
     cbreak();
+    keypad(stdscr, TRUE);
     curs_set(0);
 
     // Initialize MySQL Connection
@@ -97,7 +98,9 @@ int main(){
 
     WINDOW *win = newwin(3*yMax/4, (3*xMax/4)-10, yMax/8, (xMax/8)+10);
     WINDOW *win2 = newwin(3*yMax/4, 10, yMax/8, xMax/8);
-    // WINDOW *pwd_form = newwin(yMax/2, 10, yMax/4, xMax/4);
+    // scrollable pad
+    WINDOW *pad = newpad((3*yMax/4) + 1, xMax);
+
 
     box(win, 0, 0);
     box(win2, 0, 0);
@@ -178,6 +181,7 @@ int main(){
             else if(menubar.menus[menubar.selected_menu].text == "View"){
                 menubar.draw();
 
+                // Scrolling window WIP
                 res = stmt->executeQuery("SELECT * FROM passwords");
                 std::string s = "URL, Username, Password";
                 wattron(win, A_BOLD);
