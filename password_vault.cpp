@@ -96,9 +96,9 @@ int main(){
     int yMax, xMax;
     getmaxyx(stdscr, yMax, xMax);
 
-    WINDOW *win = newwin(3*yMax/4, (3*xMax/4)-10, yMax/8, (xMax/8)+10);
-    WINDOW *win2 = newwin((3*yMax/8)+1, 10, yMax/8, xMax/8);
-    WINDOW *win3 = newwin(3*yMax/8, 10, yMax/2, xMax/8);
+    WINDOW *win = newwin(3*yMax/4, (3*xMax/4)-20, yMax/8, (xMax/8)+20);
+    WINDOW *win2 = newwin((3*yMax/8)+1, 20, yMax/8, xMax/8);
+    WINDOW *win3 = newwin(3*yMax/8, 20, yMax/2, xMax/8);
 
     // scrollable pad
     // WINDOW *pad = newpad((3*yMax/4) + 1, xMax);
@@ -124,7 +124,7 @@ int main(){
         Menu("[X]", 'x'),
     };
 
-    Menubar menubar = Menubar(win, menus, 5);
+    Menubar menubar = Menubar(win, menus, 5, true);
     Menubar menubar2 = Menubar(win3, menus, 5, false);
     menubar.draw();
     menubar2.draw();
@@ -147,6 +147,7 @@ int main(){
             if(menubar.menus[menubar.selected_menu].text == "Add"){
                 std::string request = "Please enter Site URL:";
                 menubar.draw();
+                menubar2.draw();
                 mvwprintw(win, 2,2, request.c_str());
                 echo();
                 std::string s1 = take_input(win, 3, 2);
@@ -213,11 +214,13 @@ int main(){
         for(int i = 0; i<menubar.num_menus; i++){
             if(ch == menubar.menus[i].trigger){
                 menubar.selected_menu = i;
+                menubar2.selected_menu = i;
             }
         }
 
 
         menubar.draw();
+        menubar2.draw();
     }
 
 	endwin();

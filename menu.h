@@ -17,7 +17,7 @@ class Menu{
 
 class Menubar{
     public:
-        Menubar(WINDOW *win, Menu* menus, int num_menus, bool horizontal=true){
+        Menubar(WINDOW *win, Menu* menus, int num_menus, bool horizontal){
             this->win = win;
             this->menus = menus;
             this->num_menus = num_menus;
@@ -50,55 +50,56 @@ class Menubar{
             }
         }
         else{
-            for(int i = 0; i<num_menus; i++){
-                std::string text = this->menus[i].text;
-                if(selected_menu==i){
-                    wattron(win, A_STANDOUT);
+            for(int j = 0; j<num_menus; j++){
+                std::string text = this->menus[j].text;
+                if(selected_menu==j){
+                    wattron(this->win, A_STANDOUT);
                 }
-                mvwprintw(win, i, 0, text.c_str());
-                wattroff(win, A_STANDOUT);
+                mvwprintw(this->win, j+1, 1, text.c_str());
+                wattroff(this->win, A_STANDOUT);
+                wrefresh(this->win);
             }
         }
     }
 
-    void handleTriggers(char trigger){
-        if(trigger=='\n'){
-            this->clearScreen();
-            std::string ets = this->menus[selected_menu].text+" was pressed !";
-            // std::cout<<ets<<std::endl;
-            wmove(this->win,2,2);
-            // wclrtoeol(this->win);
-            if(this->menus[selected_menu].text == "File"){
-                std::string et[15] = {
-                    "A",
-                    "B",
-                    "C",
-                    "D",
-                    "E",
-                    "F",
-                };
-                int i = 2;
-                for(auto e : et){
-                    mvwprintw(this->win, i,2, e.c_str());
-                    i++;
-                    wrefresh(this->win);
-                }
-                i = 2;
-                wmove(this->win,2,2);
-            }
-            else{
-                wmove(this->win,2,2);
-                // wclrtoeol(this->win);
-                mvwprintw(this->win, 2,2, ets.c_str());
-            }
-            // box(this->win, 0, 0);
-        }
-        for(int i = 0; i<num_menus; i++){
-            if(trigger == this->menus[i].trigger){
-                selected_menu = i;
-            }
-        }
-    }
+    // void handleTriggers(char trigger){
+    //     if(trigger=='\n'){
+    //         this->clearScreen();
+    //         std::string ets = this->menus[selected_menu].text+" was pressed !";
+    //         // std::cout<<ets<<std::endl;
+    //         wmove(this->win,2,2);
+    //         // wclrtoeol(this->win);
+    //         if(this->menus[selected_menu].text == "File"){
+    //             std::string et[15] = {
+    //                 "A",
+    //                 "B",
+    //                 "C",
+    //                 "D",
+    //                 "E",
+    //                 "F",
+    //             };
+    //             int i = 2;
+    //             for(auto e : et){
+    //                 mvwprintw(this->win, i,2, e.c_str());
+    //                 i++;
+    //                 wrefresh(this->win);
+    //             }
+    //             i = 2;
+    //             wmove(this->win,2,2);
+    //         }
+    //         else{
+    //             wmove(this->win,2,2);
+    //             // wclrtoeol(this->win);
+    //             mvwprintw(this->win, 2,2, ets.c_str());
+    //         }
+    //         // box(this->win, 0, 0);
+    //     }
+    //     for(int i = 0; i<num_menus; i++){
+    //         if(trigger == this->menus[i].trigger){
+    //             selected_menu = i;
+    //         }
+    //     }
+    // }
 
     void clearScreen(){
         wclear(this->win);
