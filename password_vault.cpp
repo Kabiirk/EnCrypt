@@ -16,6 +16,10 @@
 #include <cppconn/statement.h>
 #include <cppconn/prepared_statement.h>
 
+// Sleep
+#include <chrono>
+#include <thread>
+
 
 #define EXAMPLE_HOST "localhost"
 #define EXAMPLE_USER "root"
@@ -100,6 +104,8 @@ int main(){
     WINDOW *win2 = newwin((3*yMax/8)+1, 20, yMax/8, xMax/8);
     WINDOW *win3 = newwin(3*yMax/8, 20, yMax/2, xMax/8);
 
+    WINDOW *pad = newpad(30, 40);
+
     // scrollable pad
     // WINDOW *pad = newpad((3*yMax/4) + 1, xMax);
 
@@ -107,6 +113,7 @@ int main(){
     box(win, 0, 0);
     box(win2, 0, 0);
     box(win3, 0, 0);
+    box(pad, 0, 0);
 
     wrefresh(win);
     wrefresh(win2);
@@ -192,17 +199,31 @@ int main(){
                 res = stmt->executeQuery("SELECT * FROM passwords");
                 std::string s = "URL, Username, Password";
                 wattron(win, A_BOLD);
-                mvwprintw(win, 2,2, s.c_str());
+                // mvwprintw(win, 2,2, s.c_str());
+                mvwprintw(pad, 2,3, s.c_str());
                 s = "-----------------------";
-                mvwprintw(win, 3,2, s.c_str());
+                // mvwprintw(win, 3,2, s.c_str());
+                mvwprintw(pad, 3,3, s.c_str());
                 wattroff(win, A_BOLD);
                 int i = 4;
                 while (res->next()) {
                     std::string result = res->getString(1)+", "+res->getString(2)+", "+res->getString(3);
-                    mvwprintw(win, i,2, result.c_str());
+                    // mvwprintw(win, i,2, result.c_str());
+                    mvwprintw(pad, i,2, result.c_str());
                     i++;
                 }
                 cout<<endl;
+
+                prefresh(pad, 0,0,5,5,20,20);
+                // for(int k = 0; k<4; k++){
+                //     prefresh(pad, 0,0,k,0,20,20);
+                //     sleep(1);
+                // }
+                // for(int k = 0; k<4; k++){
+                //     prefresh(pad, 0,0,4,k,20,20);
+                //     sleep(1);
+                // }
+
             }
             else{
                 wmove(win,2,2);
