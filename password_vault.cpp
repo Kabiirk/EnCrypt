@@ -148,7 +148,8 @@ int main(){
         // menubar.handleTriggers(ch);
 
         if(ch=='\n'){
-            menubar.clearScreen();
+            // Temporary fix to view pad
+            // menubar.clearScreen();
             std::string ets = menubar.menus[menubar.selected_menu].text+" was pressed !";
             wmove(menubar.win,2,2);
             if(menubar.menus[menubar.selected_menu].text == "Add"){
@@ -214,15 +215,14 @@ int main(){
                 }
                 cout<<endl;
 
-                prefresh(pad, 0,0,5,5,20,20);
-                // for(int k = 0; k<4; k++){
-                //     prefresh(pad, 0,0,k,0,20,20);
-                //     sleep(1);
-                // }
-                // for(int k = 0; k<4; k++){
-                //     prefresh(pad, 0,0,4,k,20,20);
-                //     sleep(1);
-                // }
+                int posy = (yMax/8)+1;
+                int posx = (xMax/8)+21;
+
+                prefresh(pad, 0,0,posy,posx,20,50);
+                for(int k = 0; k<4; k++){
+                    prefresh(pad, 0,0,posy,posx,20+k,50);
+                    sleep(1);
+                }
 
             }
             else{
