@@ -104,7 +104,10 @@ int main(){
     WINDOW *win2 = newwin((3*yMax/8)+1, 20, yMax/8, xMax/8);
     WINDOW *win3 = newwin(3*yMax/8, 20, yMax/2, xMax/8);
 
-    WINDOW *pad = newpad(30, 40);
+    int height = 3*yMax/4;
+    int width = (3*xMax/4);
+
+    WINDOW *pad = newpad(height, width);
 
     // scrollable pad
     // WINDOW *pad = newpad((3*yMax/4) + 1, xMax);
@@ -218,9 +221,13 @@ int main(){
                 int posy = (yMax/8)+1;
                 int posx = (xMax/8)+21;
 
-                prefresh(pad, 0,0,posy,posx,20,50);
-                for(int k = 0; k<4; k++){
-                    prefresh(pad, 0,0,posy,posx,20+k,50);
+                prefresh(pad, 0,0,posy,posx,height,width);
+                for(int k =0; k<5; k++){
+                    prefresh(pad, 0+k,0,posy,posx,height,width);
+                    sleep(1);
+                }
+                for(int k =0; k<5; k++){
+                    prefresh(pad, 4-k,0,posy,posx,height,width);
                     sleep(1);
                 }
 
