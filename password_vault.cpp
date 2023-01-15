@@ -198,18 +198,17 @@ int main(){
             }
             else if(menubar.menus[menubar.selected_menu].text == "View"){
                 menubar.draw();
+                menubar2.draw();
 
                 // Scrolling window WIP
                 res = stmt->executeQuery("SELECT * FROM passwords");
                 std::string s = "URL, Username, Password";
                 wattron(win, A_BOLD);
-                // mvwprintw(win, 2,2, s.c_str());
-                mvwprintw(pad, 2,3, s.c_str());
+                mvwprintw(win, 2,3, s.c_str());
                 s = "-----------------------";
-                // mvwprintw(win, 3,2, s.c_str());
-                mvwprintw(pad, 3,3, s.c_str());
+                mvwprintw(win, 3,3, s.c_str());
                 wattroff(win, A_BOLD);
-                int i = 4;
+                int i = 0;
                 while (res->next()) {
                     std::string result = res->getString(1)+", "+res->getString(2)+", "+res->getString(3);
                     // mvwprintw(win, i,2, result.c_str());
@@ -220,22 +219,37 @@ int main(){
 
                 int posy = (yMax/8)+1;
                 int posx = (xMax/8)+21;
+                int init_posy = 0;
 
-                prefresh(pad, 0,0,posy,posx,height,width);
-                for(int k =0; k<5; k++){
-                    prefresh(pad, 0+k,0,posy,posx,height,width);
-                    sleep(1);
+                prefresh(pad, init_posy,0,posy+3,posx,height,width);
+                int scroll_key = 0;
+                while(scroll_key!='x'){
+                    scroll_key = getch();
+                    if(scroll_key=='x'){
+                        continue;
+                    }
+                    if(scroll_key==KEY_UP){
+                        init_posy++;
+                    }
+                    if(scroll_key==KEY_DOWN){
+                        init_posy--;
+                    }
+                    prefresh(pad, init_posy,0,posy+3,posx,height,width);
                 }
-                for(int k =0; k<5; k++){
-                    prefresh(pad, 4-k,0,posy,posx,height,width);
-                    sleep(1);
-                }
+                // for(int k =0; k<5; k++){
+                //     prefresh(pad, init_posy+k,0,posy+3,posx,height,width);
+                //     sleep(1);
+                // }
+                // for(int k =0; k<5; k++){
+                //     prefresh(pad, init_posy-k,0,posy+3,posx,height,width);
+                //     sleep(1);
+                // }
 
             }
             else{
                 wmove(win,2,2);
                 // wclrtoeol(menubar.win);
-                mvwprintw(win, 2,2, ets.c_str());
+                mvwprintw(win, 2,3, ets.c_str());
             }
             // box(menubar.win, 0, 0);
         }
