@@ -3,6 +3,7 @@
 #include "base64.h"
 #include <curses.h>
 #include "menu.h"
+#include <string>
 
 // Connecting to MySQL
 // Windows
@@ -81,7 +82,6 @@ int main(){
     initscr();
     noecho();
     cbreak();
-    keypad(stdscr, TRUE);
     curs_set(0);
 
     // Initialize MySQL Connection
@@ -108,6 +108,7 @@ int main(){
     int width = (3*xMax/4);
 
     WINDOW *pad = newpad(height, width);
+    keypad(pad, TRUE);
 
     // scrollable pad
     // WINDOW *pad = newpad((3*yMax/4) + 1, xMax);
@@ -208,6 +209,7 @@ int main(){
                 s = "-----------------------";
                 mvwprintw(win, 3,3, s.c_str());
                 wattroff(win, A_BOLD);
+                wrefresh(win); // so that above text is visible
                 int i = 0;
                 while (res->next()) {
                     std::string result = res->getString(1)+", "+res->getString(2)+", "+res->getString(3);
@@ -215,7 +217,6 @@ int main(){
                     mvwprintw(pad, i,2, result.c_str());
                     i++;
                 }
-                cout<<endl;
 
                 int posy = (yMax/8)+1;
                 int posx = (xMax/8)+21;
@@ -224,7 +225,7 @@ int main(){
                 prefresh(pad, init_posy,0,posy+3,posx,height,width);
                 int scroll_key = 0;
                 while(scroll_key!='x'){
-                    scroll_key = getch();
+                    scroll_key = wgetch(pad);
                     if(scroll_key=='x'){
                         continue;
                     }
@@ -232,9 +233,12 @@ int main(){
                         init_posy++;
                     }
                     if(scroll_key==KEY_DOWN){
+                        if(init_posy == 0){continue;}
                         init_posy--;
                     }
                     prefresh(pad, init_posy,0,posy+3,posx,height,width);
+                    menubar.draw();
+                    menubar2.draw();
                 }
                 // for(int k =0; k<5; k++){
                 //     prefresh(pad, init_posy+k,0,posy+3,posx,height,width);
@@ -247,6 +251,7 @@ int main(){
 
             }
             else{
+                menubar.clearScreen();
                 wmove(win,2,2);
                 // wclrtoeol(menubar.win);
                 mvwprintw(win, 2,3, ets.c_str());
