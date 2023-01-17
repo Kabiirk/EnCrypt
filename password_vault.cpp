@@ -203,6 +203,10 @@ int main(){
 
                 // Scrolling window WIP
                 res = stmt->executeQuery("SELECT * FROM passwords");
+                // TODO : After assignment, last password will stay in memory, need to clear this
+                //        Variable after every view activity.
+                std::string result = "";
+                vector<std::string> result_array;
                 std::string s = "URL, Username, Password";
                 wattron(win, A_BOLD);
                 mvwprintw(win, 2,3, s.c_str());
@@ -212,7 +216,8 @@ int main(){
                 wrefresh(win); // so that above text is visible
                 int i = 0;
                 while (res->next()) {
-                    std::string result = res->getString(1)+", "+res->getString(2)+", "+res->getString(3);
+                    result = res->getString(1)+", "+res->getString(2)+", "+res->getString(3);
+                    result_array.push_back(result);
                     // mvwprintw(win, i,2, result.c_str());
                     mvwprintw(pad, i,2, result.c_str());
                     i++;
@@ -221,6 +226,12 @@ int main(){
                 int posy = (yMax/8)+1;
                 int posx = (xMax/8)+21;
                 int init_posy = 0;
+                // Keep track of visible result array
+                int init_active_row = -1;
+                // visible window would be from 0 -> y_win_max-5
+                int y_win_beg = 0;
+                int x_win_end, y_win_end;
+                getmaxyx(win, y_win_end, x_win_end);// check this
 
                 prefresh(pad, init_posy,0,posy+3,posx,height,width);
                 int scroll_key = 0;
@@ -230,15 +241,31 @@ int main(){
                         continue;
                     }
                     if(scroll_key==KEY_UP){
+                        if(y_win_end == 18){std::cout<<"YO"<<std::endl;continue;}
                         init_posy++;
+                        // Viewport
+                        init_active_row++;
+                        y_win_beg++;
+                        y_win_end++;
                     }
                     if(scroll_key==KEY_DOWN){
-                        if(init_posy == 0){continue;}
+                        if(y_win_beg == 0){continue;}
                         init_posy--;
+                        // Viewport
+                        init_active_row--;
+                        y_win_beg--;
+                        y_win_end--;
                     }
                     prefresh(pad, init_posy,0,posy+3,posx,height,width);
                     menubar.draw();
                     menubar2.draw();
+
+                    // Debugging visible password window
+                    mvwprintw(win2, 1,1, std::to_string(result_array.size()).c_str());
+                    mvwprintw(win2, 2,1, std::to_string(y_win_beg).c_str());
+                    mvwprintw(win2, 3,1, std::to_string(y_win_end-7).c_str());
+                    mvwprintw(win2, 4,1, std::to_string(init_active_row).c_str());
+                    wrefresh(win2);
                 }
                 // for(int k =0; k<5; k++){
                 //     prefresh(pad, init_posy+k,0,posy+3,posx,height,width);
