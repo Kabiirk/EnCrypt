@@ -79,7 +79,7 @@ std::string take_input(WINDOW *win, int y, int x){
 
 void debug_print(WINDOW * win, vector< std::pair<int, int> > coords){
     std::string str = "*";
-    for(auto coord : coords){
+    for (auto coord : coords){
         mvwprintw(win, coord.second, coord.first, str.c_str());
     }
 }
@@ -272,6 +272,9 @@ int main(){
                     mvwprintw(win2, 2,1, std::to_string(y_win_beg).c_str());
                     mvwprintw(win2, 3,1, std::to_string(y_win_end-7).c_str());
                     mvwprintw(win2, 4,1, std::to_string(init_active_row).c_str());
+                    mvwprintw(win2, 5,1, std::to_string(yMax).c_str());
+                    mvwprintw(win2, 6,1, std::to_string(xMax).c_str());
+
                     wrefresh(win2);
                 }
                 // for(int k =0; k<5; k++){
@@ -285,31 +288,24 @@ int main(){
 
             }
             else if(menubar.menus[menubar.selected_menu].text == "Settings"){
-                menubar.clearScreen();
-                int posy = (yMax/8)+1;
-                int posx = (xMax/8)+21;
-                int init_posy = 0;
-                // Keep track of visible result array
-                int init_active_row = -1;
-                // visible window would be from 0 -> y_win_max-5
-                int x_win_beg = 0;
-                int y_win_beg = 0;
-                int x_win_end, y_win_end;
-                getmaxyx(win, y_win_end, x_win_end);// check this
-                int x_pad_beg = 0; int y_pad_beg = 0;
-                int x_pad_end, y_pad_end;
-                getmaxyx(pad, y_pad_end, x_pad_end);
+                // menubar.clearScreen();
+                int width, height;
+                getmaxyx(win, height, width);
+                int x_view_beg = 1;
+                int y_view_beg = 4;
+                int x_view_end = x_view_beg+width-3;
+                int y_view_end = y_view_beg+height-6;
 
-                vector<std::pair<int, int>> v_win = {
-                    std::make_pair(x_win_beg, y_win_beg),
-                    std::make_pair(x_win_end, y_win_end),
+
+                vector<std::pair<int, int>> v_view = {
+                    std::make_pair(x_view_beg, y_view_beg),// view top left
+                    std::make_pair(x_view_end, y_view_end),// view bottom right
+                    std::make_pair(x_view_end, y_view_beg),
+                    std::make_pair(x_view_beg, y_view_end),
                 };
-                vector<std::pair<int, int>> v_pad = {
-                    std::make_pair(x_pad_beg, y_pad_beg),
-                    std::make_pair(x_pad_end, y_pad_end),
-                };
-                debug_print(win, v_win);
-                debug_print(pad, v_pad);
+
+                debug_print(win, v_view);
+                wrefresh(win);                
             }
             else{
                 menubar.clearScreen();
