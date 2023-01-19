@@ -77,6 +77,13 @@ std::string take_input(WINDOW *win, int y, int x){
     return s;
 }
 
+void debug_print(WINDOW * win, vector< std::pair<int, int> > coords){
+    std::string str = "*";
+    for(auto coord : coords){
+        mvwprintw(win, coord.second, coord.first, str.c_str());
+    }
+}
+
 int main(){
     // Initialize TUI
     initscr();
@@ -276,6 +283,33 @@ int main(){
                 //     sleep(1);
                 // }
 
+            }
+            else if(menubar.menus[menubar.selected_menu].text == "Settings"){
+                menubar.clearScreen();
+                int posy = (yMax/8)+1;
+                int posx = (xMax/8)+21;
+                int init_posy = 0;
+                // Keep track of visible result array
+                int init_active_row = -1;
+                // visible window would be from 0 -> y_win_max-5
+                int x_win_beg = 0;
+                int y_win_beg = 0;
+                int x_win_end, y_win_end;
+                getmaxyx(win, y_win_end, x_win_end);// check this
+                int x_pad_beg = 0; int y_pad_beg = 0;
+                int x_pad_end, y_pad_end;
+                getmaxyx(pad, y_pad_end, x_pad_end);
+
+                vector<std::pair<int, int>> v_win = {
+                    std::make_pair(x_win_beg, y_win_beg),
+                    std::make_pair(x_win_end, y_win_end),
+                };
+                vector<std::pair<int, int>> v_pad = {
+                    std::make_pair(x_pad_beg, y_pad_beg),
+                    std::make_pair(x_pad_end, y_pad_end),
+                };
+                debug_print(win, v_win);
+                debug_print(pad, v_pad);
             }
             else{
                 menubar.clearScreen();
