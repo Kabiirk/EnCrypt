@@ -175,6 +175,7 @@ int main(){
             std::string ets = menubar.menus[menubar.selected_menu].text+" was pressed !";
             wmove(menubar.win,2,2);
             if(menubar.menus[menubar.selected_menu].text == "Add"){
+                menubar.clearScreen();
                 std::string request = "Please enter Site URL:";
                 menubar.draw();
                 menubar2.draw();
@@ -219,8 +220,6 @@ int main(){
                 menubar.draw();
                 menubar2.draw();
 
-                /*APPROACH 1 : With Pad*/
-
                 // Scrolling window WIP
                 res = stmt->executeQuery("SELECT * FROM passwords");
                 // TODO : After assignment, last password will stay in memory, need to clear this
@@ -238,101 +237,90 @@ int main(){
                 while (res->next()) {
                     result = res->getString(1)+", "+res->getString(2)+", "+res->getString(3);
                     result_array.push_back(result);
-                    // mvwprintw(win, i,2, result.c_str());
-                    // mvwprintw(pad, i,2, result.c_str());
+                    mvwprintw(pad, i,2, result.c_str());
                     i++;
                 }
 
                 /*APPROACH 1 : PAD*/
 
-                // int posy = (yMax/8)+1;
-                // int posx = (xMax/8)+21;
-                // int init_posy = 0;
-                // // Keep track of visible result array
-                // int init_active_row = -1;
-                // // visible window would be from 0 -> y_win_max-5
-                // int y_win_beg = 0;
-                // int x_win_end, y_win_end;
-                // getmaxyx(win, y_win_end, x_win_end);// check this
+                int posy = (yMax/8)+1;
+                int posx = (xMax/8)+21;
+                int init_posy = 0;
+                // Keep track of visible result array
+                int init_active_row = -1;
+                // visible window would be from 0 -> y_win_max-5
+                int y_win_beg = 0;
+                int x_win_end, y_win_end;
+                getmaxyx(win, y_win_end, x_win_end);// check this
 
-                // // Scroll viewport implementation 2
-                // int width2, height2;
-                // getmaxyx(win, height2, width2);
-                // int x_view_beg = (xMax/8)+21;//1;
-                // int y_view_beg = (yMax/8)+1;//4;
-                // int x_view_end = x_view_beg+width2-3;
-                // int y_view_end = y_view_beg+height2-6;
+                // Scroll viewport implementation 2
+                int width2, height2;
+                getmaxyx(win, height2, width2);
+                int x_view_beg = (xMax/8)+21;//1;
+                int y_view_beg = (yMax/8)+1;//4;
+                int x_view_end = x_view_beg+width2-3;
+                int y_view_end = y_view_beg+height2-6;
 
-                // prefresh(pad, init_posy,0,posy+3,posx,height,width);
-                // int scroll_key = 0;
-                // while(scroll_key!='x'){
-                //     scroll_key = wgetch(pad);
-                //     if(scroll_key=='x'){
-                //         continue;
-                //     }
-                //     if(scroll_key==KEY_UP){
-                //         if(init_posy == result_array.size()){continue;}
-                //         init_posy++;
-                //         // Viewport
-                //         init_active_row++;
-                //         y_win_beg++;
-                //         y_win_end++;
-                //     }
-                //     if(scroll_key==KEY_DOWN){
-                //         if(y_win_beg == 0){continue;}
-                //         init_posy--;
-                //         // Viewport
-                //         init_active_row--;
-                //         y_win_beg--;
-                //         y_win_end--;
-                //     }
-                //     prefresh(pad, init_posy,0,posy+3,posx,height,width);
-                //     menubar.draw();
-                //     menubar2.draw();
-
-                //     // Debugging visible password window
-                //     // mvwprintw(win2, 1,1, std::to_string(result_array.size()).c_str());
-                //     // mvwprintw(win2, 2,1, std::to_string(y_view_beg).c_str());
-                //     // mvwprintw(win2, 3,1, std::to_string(y_view_end).c_str());
-                //     // mvwprintw(win2, 4,1, std::to_string(init_active_row).c_str());
-                //     // mvwprintw(win2, 5,1, std::to_string(yMax).c_str());
-                //     // mvwprintw(win2, 6,1, std::to_string(xMax).c_str());
-
-                //     wrefresh(win2);
-                // }
-
-                /* APPROACH 2 : Refreshing main Window */
-                /*
-                Available viewport_height = height - 6
-                number of pages to scroll = vector_length/viewport_height
-                Active_row starts @ -1-> +1/-1 on keypress -> if it goes out of bound, scroll up/down
-                sliding window needs y_beg, y_end to see which part of array visible
-                */
-                // int height, width;
-                // int viewport_begin = 5;
-                // getmaxyx(win, height, width);
-                // int viewport_height = height-6;
-                // int active_row = -1;
-                // int col_within_viewport_start;
+                prefresh(pad, init_posy,0,posy+3,posx,height,width);
                 int scroll_key = 0;
-
-                // Printing on Window
-                for(int i = 5; i<3 ; i++){
-                    mvwprintw(win, i, 1, result_array[i].c_str());
-                }
-                menubar.draw();
-                menubar2.draw();
-                wrefresh(win);
-
                 while(scroll_key!='x'){
-                    scroll_key = getch();
+                    scroll_key = wgetch(pad);
                     if(scroll_key=='x'){
                         continue;
                     }
-                    if(scroll_key=KEY_DOWN){
-                        continue;
+                    if(scroll_key==KEY_UP){
+                        // if(y_win_beg == 0){continue;}
+                        // init_posy--;
+                        // Viewport
+                        init_active_row--;
+                        // y_win_beg--;
+                        // y_win_end--;
+
+                        // Emphasis
+                        for(int i = 0; i<result_array.size(); i++){
+                            if(i == init_active_row){
+                                wattron(pad, A_STANDOUT);
+                            }
+                            mvwprintw(pad, i,2, result_array[i].c_str());
+                            wattroff(pad, A_STANDOUT);
+                        }
                     }
+                    if(scroll_key==KEY_DOWN){
+                        if(init_posy == result_array.size()){continue;}
+                        // init_posy++;
+                        // // Viewport
+                        init_active_row++;
+                        // y_win_beg++;
+                        // y_win_end++;
+
+                        // Emphasis
+                        for(int i = 0; i<result_array.size(); i++){
+                            if(i == init_active_row){
+                                wattron(pad, A_STANDOUT);
+                            }
+                            mvwprintw(pad, i,2, result_array[i].c_str());
+                            wattroff(pad, A_STANDOUT);
+                        }
+                    }
+                    if(scroll_key=='\n'){
+                        mvwprintw(win, 1,1, result_array[init_active_row].c_str());
+                        wrefresh(win);
+                    }
+                    prefresh(pad, init_posy,0,posy+3,posx,height,width);
+                    menubar.draw();
+                    menubar2.draw();
+
+                    // Debugging visible password window
+                    // mvwprintw(win2, 1,1, std::to_string(result_array.size()).c_str());
+                    // mvwprintw(win2, 2,1, std::to_string(y_view_beg).c_str());
+                    // mvwprintw(win2, 3,1, std::to_string(y_view_end).c_str());
+                    mvwprintw(win2, 4,1, std::to_string(init_active_row).c_str());
+                    // mvwprintw(win2, 5,1, std::to_string(yMax).c_str());
+                    // mvwprintw(win2, 6,1, std::to_string(xMax).c_str());
+
+                    wrefresh(win2);
                 }
+
             }
             else if(menubar.menus[menubar.selected_menu].text == "Settings"){
                 menubar.clearScreen();
