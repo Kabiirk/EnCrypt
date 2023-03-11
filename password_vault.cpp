@@ -261,6 +261,9 @@ int main(){
                 int x_view_end = x_view_beg+width2-3;
                 int y_view_end = y_view_beg+height2-6;
 
+                int viewport_height = height2 - 6;
+                int delta = viewport_height;
+
                 prefresh(pad, init_posy,0,posy+3,posx,height,width);
                 int scroll_key = 0;
                 while(scroll_key!='x'){
@@ -269,10 +272,13 @@ int main(){
                         continue;
                     }
                     if(scroll_key==KEY_UP){
-                        // if(y_win_beg == 0){continue;}
+                        if(init_active_row == 0){continue;}
+
                         // init_posy--;
                         // Viewport
                         init_active_row--;
+                        init_posy--;
+
                         // y_win_beg--;
                         // y_win_end--;
 
@@ -286,12 +292,18 @@ int main(){
                         }
                     }
                     if(scroll_key==KEY_DOWN){
-                        if(init_posy == result_array.size()){continue;}
+                        if(init_active_row == result_array.size()){continue;}
+                        if(init_active_row >= 14){
+                            init_posy++;
+                            delta++;
+                        }
                         // init_posy++;
                         // // Viewport
                         init_active_row++;
                         // y_win_beg++;
                         // y_win_end++;
+                        // std::string re = "YOYOHONEY";
+                        // mvwprintw(win, y_view_beg,x_view_beg, re.c_str());
 
                         // Emphasis
                         for(int i = 0; i<result_array.size(); i++){
